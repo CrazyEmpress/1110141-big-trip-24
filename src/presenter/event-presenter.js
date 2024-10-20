@@ -5,6 +5,8 @@ import NewEventView from '../view/new-event-view';
 // Импорт вспомогательных функций
 import { replace, render, remove } from '../framework/render';
 import { isEscapeKey } from '../utils/common';
+import {UserAction, UpdateType} from '../const.js';
+import { isDatesEqual } from '../utils/event';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -51,6 +53,7 @@ export default class EventPresenter {
       event: this.#event,
       onEditFormSubmit: this.#onEditFormSubmit,
       onRollupClick: this.#onRollupClick,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (previousEditFormComponent === null || previousEventComponent === null) {
@@ -120,14 +123,32 @@ export default class EventPresenter {
   };
 
   // Обработчик подтверждения (submit) формы редактирования точки маршрута
-  #onEditFormSubmit = (event) => {
-    this.#handleDataChange(event);
-    this.#replaceFormToEvent(event);
+  #onEditFormSubmit = (update) => {
+    const isMinorUpdate = !isDatesEqual(this.#event.date_from, update.date_from) || !isDatesEqual(this.#event.date_to, update.date_to);
+
+    this.#handleDataChange(
+      UserAction.UPDATE_TASK,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update
+    );
+    this.#replaceFormToEvent();
     document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#event, is_favorite: !this.#event.is_favorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_TASK,
+      UpdateType.MINOR,
+      {...this.#event, is_favorite: !this.#event.is_favorite}
+    );
+  };
+
+  #handleDeleteClick = (event) => {
+    this.#handleDataChange(
+      UserAction.DELETE_TASK,
+      UpdateType.MINOR,
+      event
+    );
   };
 }
 

@@ -141,5 +141,9 @@ const sortByDay = (eventFirst, eventSecond) => {
   return 0;
 };
 
+function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D/M/YY HH:mm');
+}
 
-export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast, sortByPrice, sortByTime, sortByDay, getCityInfoByName };
+
+export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast, sortByPrice, sortByTime, sortByDay, getCityInfoByName, isDatesEqual };

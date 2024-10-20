@@ -34,14 +34,4 @@ const capitalizeFirstLetter = (word) => {
  */
 const isEscapeKey = (event) => event.key === 'Escape';
 
-/**
- * "Обновляет" массив точек маршрута
- * @param {Array} items Массив точек маршрута
- * @param {event} update Обновлённая точка маршута
- * @returns {Array} Обновлённый массив точек маршрута
- */
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
-export { getRandomInteger, getRandomArrayElement, capitalizeFirstLetter, isEscapeKey, updateItem };
+export { getRandomInteger, getRandomArrayElement, capitalizeFirstLetter, isEscapeKey };

@@ -13,7 +13,7 @@ export default class newEditFormEventPhotoView extends AbstractView {
     super();
     this.#src = src;
     this.#description = description;
-  };
+  }
 
   get template () {
     return editFormEventPhotoTemplate(this.#src, this.#description);

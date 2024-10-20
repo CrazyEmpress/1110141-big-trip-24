@@ -188,15 +188,17 @@ function createEditFormTemplate (event) {
 export default class NewEditFormView extends AbstractStatefulView {
   #onEditFormSubmit = null;
   #onRollupClick = null;
+  #onDeleteClick = null;
   #datepickerFrom = null;
   #datepickerTo = null;
 
-  constructor ({event, onEditFormSubmit, onRollupClick}) {
+  constructor ({event, onEditFormSubmit, onRollupClick, onDeleteClick}) {
     super();
     this._setState(NewEditFormView.parseEventToState(event));
     // Получаем обработчик сабмита формы снаружи
     this.#onEditFormSubmit = onEditFormSubmit;
     this.#onRollupClick = onRollupClick;
+    this.#onDeleteClick = onDeleteClick;
     this._restoreHandlers();
   }
 
@@ -213,6 +215,7 @@ export default class NewEditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', () => this.#destinationChangeHandler());
     this.element.querySelector('.event__type-group').addEventListener('change', (event) => this.#typeChangeHandler(event));
     this.element.querySelector('.event__available-offers').addEventListener('click', (event) => this.#offersListClickHandler(event));
+    this.element.querySelector('.event__reset-btn').addEventListener('click', (event) => this.#formDeleteClickHandler(event));
 
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
@@ -298,6 +301,11 @@ export default class NewEditFormView extends AbstractStatefulView {
         ? [...this._state.offers, offerID]
         : this._state.offers.filter((id) => id !== offerID),
     });
+  };
+
+  #formDeleteClickHandler = (event) => {
+    event.preventDefault();
+    this.#onDeleteClick(NewEditFormView.parseStateToEvent(this._state));
   };
 
   get template() {
