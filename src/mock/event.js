@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 
 const DESTINATION_POINTS = [
   {
-    id: 1,
+    id: nanoid(),
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     name:'London',
     pictures: [
@@ -15,7 +15,7 @@ const DESTINATION_POINTS = [
     ]
   },
   {
-    id: 0,
+    id: nanoid(),
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     name:'Tokyo',
     pictures: [
@@ -26,7 +26,7 @@ const DESTINATION_POINTS = [
     ]
   },
   {
-    id: 2,
+    id: nanoid(),
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     name:'Berlin',
     pictures: [
@@ -37,7 +37,7 @@ const DESTINATION_POINTS = [
     ]
   },
   {
-    id: 3,
+    id: nanoid(),
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     name:'Sydney',
     pictures: [
@@ -48,7 +48,7 @@ const DESTINATION_POINTS = [
     ]
   },
   {
-    id: 4,
+    id: nanoid(),
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     name:'Buenos Aires',
     pictures: [
@@ -59,7 +59,7 @@ const DESTINATION_POINTS = [
     ]
   },
   {
-    id: 5,
+    id: nanoid(),
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     name:'Cairo',
     pictures: [
@@ -76,12 +76,12 @@ const OFFERS = [
     type: 'taxi',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'taxi offer',
         price: getRandomInteger()
       },
       {
-        id: 2,
+        id: nanoid(),
         title: 'another taxi offer',
         price: getRandomInteger()
       }
@@ -91,17 +91,17 @@ const OFFERS = [
     type: 'bus',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'bus trip',
         price: getRandomInteger()
       },
       {
-        id: 2,
+        id: nanoid(),
         title: 'express bus',
         price: getRandomInteger()
       },
       {
-        id: 3,
+        id: nanoid(),
         title: 'night bus',
         price: getRandomInteger()
       }
@@ -111,7 +111,7 @@ const OFFERS = [
     type: 'train',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'train ticket',
         price: getRandomInteger()
       },
@@ -121,12 +121,12 @@ const OFFERS = [
     type: 'ship',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'dream cruise',
         price: getRandomInteger()
       },
       {
-        id: 2,
+        id: nanoid(),
         title: 'ferry to treasure island',
         price: getRandomInteger()
       }
@@ -136,12 +136,12 @@ const OFFERS = [
     type: 'drive',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'ford focus rental',
         price: getRandomInteger()
       },
       {
-        id: 2,
+        id: nanoid(),
         title: 'delimobil carsharing',
         price: getRandomInteger()
       }
@@ -151,12 +151,12 @@ const OFFERS = [
     type: 'flight',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'flight paris',
         price: getRandomInteger()
       },
       {
-        id: 2,
+        id: nanoid(),
         title: 'flight new york',
         price: getRandomInteger()
       }
@@ -166,12 +166,12 @@ const OFFERS = [
     type: 'check-in',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'hilton hotel',
         price: getRandomInteger()
       },
       {
-        id: 2,
+        id: nanoid(),
         title: 'friends hostel',
         price: getRandomInteger()
       }
@@ -181,12 +181,12 @@ const OFFERS = [
     type: 'sightseeing',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'kremlin tour',
         price: getRandomInteger()
       },
       {
-        id: 2,
+        id: nanoid(),
         title: 'hermitage museum visit',
         price: getRandomInteger()
       }
@@ -196,12 +196,12 @@ const OFFERS = [
     type: 'restaurant',
     offers: [
       {
-        id: 1,
+        id: nanoid(),
         title: 'pushkin restaurant',
         price: getRandomInteger()
       },
       {
-        id: 2,
+        id: nanoid(),
         title: 'shokoladnitsa cafe',
         price: getRandomInteger()
       }
@@ -211,7 +211,7 @@ const OFFERS = [
 
 const mockEvents = [
   {
-    id: 1,
+    id: nanoid(),
     type: getRandomArrayElement(EVENT_POINTS_TYPES),
     destination: getRandomArrayElement(DESTINATION_POINTS).id,
     'date_from': new Date('2024-12-17 09:00'),
@@ -221,7 +221,7 @@ const mockEvents = [
     offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
   {
-    id: 2,
+    id: nanoid(),
     type: getRandomArrayElement(EVENT_POINTS_TYPES),
     destination: getRandomArrayElement(DESTINATION_POINTS).id,
     'date_from': new Date('2024-10-02 09:45'),
@@ -231,7 +231,7 @@ const mockEvents = [
     offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
   {
-    id: 3,
+    id: nanoid(),
     type: getRandomArrayElement(EVENT_POINTS_TYPES),
     destination: getRandomArrayElement(DESTINATION_POINTS).id,
     'date_from': new Date('2020-02-19 08:20'),
@@ -241,7 +241,7 @@ const mockEvents = [
     offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
   {
-    id: 4,
+    id: nanoid(),
     type: getRandomArrayElement(EVENT_POINTS_TYPES),
     destination: getRandomArrayElement(DESTINATION_POINTS).id,
     'date_from': new Date('2020-04-11 09:00'),
@@ -251,13 +251,43 @@ const mockEvents = [
     offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
   {
-    id: 5,
+    id: nanoid(),
     type: getRandomArrayElement(EVENT_POINTS_TYPES),
     destination: getRandomArrayElement(DESTINATION_POINTS).id,
     'date_from': new Date('2021-02-14 12:20'),
     'date_to': new Date('2021-04-10 23:30'),
     'base_price': getRandomInteger(),
     'is_favorite': true,
+    offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
+  },
+  {
+    id: nanoid(),
+    type: getRandomArrayElement(EVENT_POINTS_TYPES),
+    destination: getRandomArrayElement(DESTINATION_POINTS).id,
+    'date_from': new Date('2023-06-01 14:00'),
+    'date_to': new Date('2023-06-02 16:30'),
+    'base_price': getRandomInteger(),
+    'is_favorite': true,
+    offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
+  },
+  {
+    id: nanoid(),
+    type: getRandomArrayElement(EVENT_POINTS_TYPES),
+    destination: getRandomArrayElement(DESTINATION_POINTS).id,
+    'date_from': new Date('2024-11-12 08:00'),
+    'date_to': new Date('2024-11-15 20:15'),
+    'base_price': getRandomInteger(),
+    'is_favorite': false,
+    offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
+  },
+  {
+    id: nanoid(),
+    type: getRandomArrayElement(EVENT_POINTS_TYPES),
+    destination: getRandomArrayElement(DESTINATION_POINTS).id,
+    'date_from': new Date('2022-03-22 10:45'),
+    'date_to': new Date('2022-03-25 18:00'),
+    'base_price': getRandomInteger(),
+    'is_favorite': false,
     offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
 ];
