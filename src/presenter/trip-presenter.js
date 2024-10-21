@@ -2,13 +2,14 @@
 import NewListSortView from '../view/new-list-sort-view';
 // Это до поры до времени import NewAddPointView from '../view/new-add-new-point-view';
 import NewListView from '../view/new-list-view';
-import NewNoPointView from '../view/no-points-view';
+import NewNoPointsView from '../view/no-points-view';
 
 // Импорт вспомогательных функций
 import { render, remove } from '../framework/render';
 import { EventPresenter } from './event-presenter';
 import { SortType, UserAction, UpdateType } from '../const';
 import { sortByPrice, sortByTime, sortByDay } from '../utils/event';
+import {filter} from '../utils/filter.js';
 
 export default class TripsPresenter {
   #tripList = null;
@@ -18,28 +19,35 @@ export default class TripsPresenter {
   #sortComponent = null;
   #eventsModel = null;
   #body = null;
+  #filterModel = null;
+  #noPointsView = null;
+  #filterType = null;
 
   #currentSortType = SortType.DEFAULT;
 
   #listElement = new NewListView();
-  #noPointView = new NewNoPointView();
 
-  constructor({eventsModel}) {
+  constructor({eventsModel, filterModel}) {
     this.#body = document.body;
-
+    this.#filterModel = filterModel;
     this.#eventsModel = eventsModel;
     this.#eventsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
+    this.#filterType = this.#filterModel.filter;
+    const events = this.#eventsModel.events;
+    const filteredEvents = filter[this.#filterType](events);
+
     switch (this.#currentSortType) {
       case SortType.PRICE:
-        return [...this.#eventsModel.events].sort(sortByPrice);
+        return filteredEvents.sort(sortByPrice);
       case SortType.TIME:
-        return [...this.#eventsModel.events].sort(sortByTime);
+        return filteredEvents.sort(sortByTime);
     }
 
-    return [...this.#eventsModel.events].sort(sortByDay);
+    return filteredEvents.sort(sortByDay);
   }
 
   /**
@@ -63,7 +71,7 @@ export default class TripsPresenter {
     // TODO: Пока так, потом надо будет переделать фразы под каждый фильтр
     if (this.events.length === 0) {
       // Если точек маршрута нет — выводим сообщение
-      render(this.#noPointView, this.#body.querySelector('.trip-events'));
+      this.#renderNoPointsView();
     } else {
       this.#renderSort();
       // Отрисовываем сортировку
@@ -75,11 +83,18 @@ export default class TripsPresenter {
     }
   }
 
+  #renderNoPointsView () {
+    this.#noPointsView = new NewNoPointsView({
+      filterType: this.#filterType,
+    });
+    render(this.#noPointsView, this.#body.querySelector('.trip-events'));
+  }
+
   /**
    * Создаёт экземпляр презентера точки маршрута и отрисовывает её через метод init()
    * @param {event} event - Точка маршрута
    */
-  #renderEvent (event) {
+  #renderEvent = (event) => {
     const eventPresenter = new EventPresenter({
       onDataChange: this.#handleViewAction,
       tripList: this.#tripList,
@@ -87,20 +102,20 @@ export default class TripsPresenter {
     });
     this.#eventPresenters.set(event.id, eventPresenter);
     eventPresenter.init(event);
-  }
+  };
 
-  #renderEventsList() {
+  #renderEventsList = () => {
     this.events.forEach((event) => this.#renderEvent(event));
-  }
+  };
 
   /**
    * Создаёт экземпляр сортировки
    */
-  #renderSort () {
+  #renderSort = () => {
     this.#sortComponent = new NewListSortView({
       onSortTypeChange: this.#handleSortTypeChange,
     });
-  }
+  };
 
   /**
    * Сортирует точки маршрута по переданному типу сортировки
@@ -153,16 +168,16 @@ export default class TripsPresenter {
     }
   };
 
-  #clearTrips({ resetSortType = false } = {}) {
+  #clearTrips = ({ resetSortType = false } = {}) => {
 
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noPointView);
+    remove(this.#noPointsView);
 
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
     }
-  }
+  };
 }
