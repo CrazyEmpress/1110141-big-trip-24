@@ -1,5 +1,4 @@
 // Импорт вьюшек
-import NewListFilterView from '../view/new-list-filter-view';
 import NewListSortView from '../view/new-list-sort-view';
 // Это до поры до времени import NewAddPointView from '../view/new-add-new-point-view';
 import NewListView from '../view/new-list-view';
@@ -7,7 +6,6 @@ import NewNoPointView from '../view/no-points-view';
 
 // Импорт вспомогательных функций
 import { render, remove } from '../framework/render';
-import { generateFilter } from '../mock/filter';
 import { EventPresenter } from './event-presenter';
 import { SortType, UserAction, UpdateType } from '../const';
 import { sortByPrice, sortByTime, sortByDay } from '../utils/event';
@@ -26,17 +24,11 @@ export default class TripsPresenter {
   #listElement = new NewListView();
   #noPointView = new NewNoPointView();
 
-  #filters = null;
-  #listFilter = null;
-
   constructor({eventsModel}) {
     this.#body = document.body;
 
     this.#eventsModel = eventsModel;
     this.#eventsModel.addObserver(this.#handleModelEvent);
-
-    this.#filters = generateFilter(this.events);
-    this.#listFilter = new NewListFilterView({ filters: this.#filters });
   }
 
   get events() {
@@ -61,16 +53,7 @@ export default class TripsPresenter {
   /**
    * Метод отрисовки элементов на странице
    */
-
-  /**
-   * TODO: Переделать так, чтобы отрисовывать не в this.#body.querySelector('.trip-controls__filters') а в, например, this.tripMain.element
-   * (с другой стороны декомпозируя это всё дальше в один момент упрусь в то, что все эти экземпляры классов нужно куда-то вставлять через querySelector)
-   */
   #renderTrips () {
-
-    // Отрисовываем фильтры
-    render(this.#listFilter, this.#body.querySelector('.trip-controls__filters'));
-
     // Получаем DOM элемент списка точек маршрута
     this.#tripList = this.#listElement.element;
 
@@ -164,21 +147,19 @@ export default class TripsPresenter {
         this.#renderTrips();
         break;
       case UpdateType.MAJOR:
-        this.#clearTrips({resetSortType: true, resetFilter: true});
+        this.#clearTrips({ resetSortType: true });
         this.#renderTrips();
         break;
     }
   };
 
-  #clearTrips({resetSortType = false, resetFilter = false} = {}) {
+  #clearTrips({ resetSortType = false } = {}) {
 
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
     remove(this.#noPointView);
-
-    // Сюда нужно будет добавить фильтрацию по-умолчанию (resetFilter)
 
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
