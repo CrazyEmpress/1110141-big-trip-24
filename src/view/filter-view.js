@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 
-function createNewFilterItemTemplate(filter, currentFilterType) {
+function createFilterItemTemplate(filter, currentFilterType) {
   const {type, count} = filter;
 
   return `<div class="trip-filters__filter">
@@ -16,8 +16,8 @@ function createNewFilterItemTemplate(filter, currentFilterType) {
           </div>`;
 }
 
-function createNewListFilterTemplate (filterItems, currentFilterType) {
-  const filterItemsTemplate = filterItems.map((filter) => createNewFilterItemTemplate(filter, currentFilterType)).join('');
+function createFilterTemplate (filterItems, currentFilterType) {
+  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join('');
   return `<div class="trip-main__trip-controls  trip-controls">
             <div class="trip-controls__filters">
               <h2 class="visually-hidden">Filter events</h2>
@@ -29,7 +29,7 @@ function createNewListFilterTemplate (filterItems, currentFilterType) {
           </div>`;
 }
 
-export default class NewListFilterView extends AbstractView {
+export default class FilterView extends AbstractView {
 
   #filters = null;
   #handleFilterTypeChange = null;
@@ -45,11 +45,11 @@ export default class NewListFilterView extends AbstractView {
   }
 
   get template() {
-    return createNewListFilterTemplate(this.#filters, this.#currentFilter);
+    return createFilterTemplate(this.#filters, this.#currentFilter);
   }
 
   #filterTypeChangeHandler = (event) => {
     event.preventDefault();
-    this.#handleFilterTypeChange();
+    this.#handleFilterTypeChange(event.target.value);
   };
 }
