@@ -9,7 +9,7 @@ function editFormOffersSectionTemplate (eventOfferItemsList) {
           </section>`;
 }
 
-export default class newEditFormOffersSectionView extends AbstractView {
+export default class EditFormOffersSectionView extends AbstractView {
 
   #eventOfferItemsList = null;
 

@@ -1,5 +1,5 @@
 // Импорт вьюшек
-import NewEditFormView from '../view/new-edit-form-view';
+import EditFormView from '../view/edit-form-view.js';
 import NewEventView from '../view/new-event-view';
 
 // Импорт вспомогательных функций
@@ -49,7 +49,7 @@ export default class EventPresenter {
       onEventRollupClick: this.#onEventRollupClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
-    this.#editFormView = new NewEditFormView({
+    this.#editFormView = new EditFormView({
       event: this.#event,
       onEditFormSubmit: this.#onEditFormSubmit,
       onRollupClick: this.#onRollupClick,

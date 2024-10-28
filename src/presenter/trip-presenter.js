@@ -1,15 +1,15 @@
 // Импорт вьюшек
 import NewListSortView from '../view/new-list-sort-view';
-// Это до поры до времени import NewAddPointView from '../view/new-add-new-point-view';
 import NewListView from '../view/new-list-view';
 import NewNoPointsView from '../view/no-points-view';
+import NewEventPresenter from './new-event-presenter.js';
 
 // Импорт вспомогательных функций
 import { render, remove } from '../framework/render';
 import { EventPresenter } from './event-presenter';
-import { SortType, UserAction, UpdateType } from '../const';
+import { SortType, UserAction, UpdateType, FilterType } from '../const';
 import { sortByPrice, sortByTime, sortByDay } from '../utils/event';
-import {filter} from '../utils/filter.js';
+import { filter } from '../utils/filter.js';
 
 export default class TripsPresenter {
   #tripList = null;
@@ -22,17 +22,31 @@ export default class TripsPresenter {
   #filterModel = null;
   #noPointsView = null;
   #filterType = null;
+  #newEventPresenter = null;
 
   #currentSortType = SortType.DEFAULT;
 
   #listElement = new NewListView();
 
-  constructor({eventsModel, filterModel}) {
+  constructor({eventsModel, filterModel, onNewEventDestroy}) {
     this.#body = document.body;
     this.#filterModel = filterModel;
     this.#eventsModel = eventsModel;
+
+    this.#newEventPresenter = new NewEventPresenter({
+      eventListContainer: this.#listElement.element,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewEventDestroy
+    });
+
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  createEvent() {
+    this.#currentSortType = SortType.DEFAULT;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newEventPresenter.init();
   }
 
   get events() {
@@ -135,6 +149,7 @@ export default class TripsPresenter {
    * Сбрасывает режим отображения (обычный или редактирование) точек маршрута
    */
   #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -173,6 +188,7 @@ export default class TripsPresenter {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 
+    this.#newEventPresenter.destroy();
     remove(this.#sortComponent);
     remove(this.#noPointsView);
 

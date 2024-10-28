@@ -1,11 +1,11 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
-import newEditFormEventTypeItemView from '../view/new-edit-form-event-type-item-view';
-import newEditFormEventOfferSelectorView from '../view/new-edit-form-event-offer-selector-view';
-import newEditFormOffersSectionView from '../view/new-event-offers-section-view';
-import newEditFormEventDestinationSectionView from '../view/new-edit-form-event-destination-section-view';
-import newEditFormEventPhotoContainerView from '../view/new-edit-form-event-photo-container-view';
-import newEditFormEventPhotoView from '../view/new-edit-form-event-photo-view';
+import EditFormEventTypeItemView from './edit-form-event-type-item-view';
+import EditFormEventOfferSelectorView from './edit-form-event-offer-selector-view';
+import EditFormOffersSectionView from './event-offers-section-view';
+import EditFormEventDestinationSectionView from './edit-form-event-destination-section-view';
+import EditFormEventPhotoContainerView from './edit-form-event-photo-container-view';
+import EditFormEventPhotoView from './edit-form-event-photo-view';
 
 // Импорт вспомогательных функций
 import { formatDate, getCityInfoByID, getCityInfoByName } from '../utils/event';
@@ -51,7 +51,7 @@ function getDestinationListOptions() {
 function getEventTypeItemsList(selectedType) {
   const eventTypeData = getEventTypeData(OFFERS, selectedType);
   return eventTypeData.map(({ eventType, isChecked }) => {
-    const editFormEventTypeItem = new newEditFormEventTypeItemView({ eventType, isChecked });
+    const editFormEventTypeItem = new EditFormEventTypeItemView({ eventType, isChecked });
     return editFormEventTypeItem.template;
   }).join('');
 }
@@ -69,7 +69,7 @@ function getEventOfferItemsList(eventType, selectedOffers) {
   return availableOffers.map((offer) => {
     const { title: offerTitle, price: offerPrice, id } = offer;
     const offerCheckedAttribute = checkedOffersSet.has(id) ? 'checked' : '';
-    const editFormEventOfferSelector = new newEditFormEventOfferSelectorView({ offerCheckedAttribute, offerTitle, offerPrice, offerID: id });
+    const editFormEventOfferSelector = new EditFormEventOfferSelectorView({ offerCheckedAttribute, offerTitle, offerPrice, offerID: id });
     return editFormEventOfferSelector.template;
   }).join('');
 }
@@ -80,7 +80,7 @@ function getEventOfferItemsList(eventType, selectedOffers) {
  * @returns {string} - HTML-секция с предложениями или пустая строка, если предложений нет.
  */
 function createOffersSection(eventOfferItemsList) {
-  return eventOfferItemsList ? new newEditFormOffersSectionView({ eventOfferItemsList }).template : '';
+  return eventOfferItemsList ? new EditFormOffersSectionView({ eventOfferItemsList }).template : '';
 }
 
 /**
@@ -89,7 +89,7 @@ function createOffersSection(eventOfferItemsList) {
  * @returns {string} - HTML-секция с описанием или пустая строка, если описания нет.
  */
 function createDescriptionSection(cityInfo) {
-  return cityInfo.description ? new newEditFormEventDestinationSectionView({ description: cityInfo.description }).template : '';
+  return cityInfo.description ? new EditFormEventDestinationSectionView({ description: cityInfo.description }).template : '';
 }
 
 /**
@@ -103,26 +103,52 @@ function createPhotosContainer(cityInfo) {
   }
 
   const pictures = cityInfo.pictures.map((picture) =>
-    new newEditFormEventPhotoView({ src: picture.src, description: picture.description }).template
+    new EditFormEventPhotoView({ src: picture.src, description: picture.description }).template
   ).join('');
 
-  return new newEditFormEventPhotoContainerView({ pictures }).template;
+  return new EditFormEventPhotoContainerView({ pictures }).template;
 }
 
 function createEditFormTemplate (event) {
 
-  const { base_price, date_from, date_to, destination, offers, type } = event;
+  let { base_price, date_from, date_to, destination, offers, type } = event;
 
-  const cityInfo = getCityInfo(destination);
-  const eventDatetimeFrom = formatEventDateTime(date_from);
-  const eventDatetimeTo = formatEventDateTime(date_to);
-  const destinationListOptions = getDestinationListOptions();
+  let cityInfo,
+    eventDatetimeFrom,
+    eventDatetimeTo,
+    destinationListOptions,
+    eventTypeItemsList,
+    eventOfferItemsList,
+    offersSection,
+    descriptionSection,
+    photosContainer;
 
-  const eventTypeItemsList = getEventTypeItemsList(type);
-  const eventOfferItemsList = getEventOfferItemsList(type, offers);
-  const offersSection = createOffersSection(eventOfferItemsList);
-  const descriptionSection = createDescriptionSection(cityInfo);
-  const photosContainer = createPhotosContainer(cityInfo);
+  if (event.base_price !== null && event.destination !== null) {
+    cityInfo = getCityInfo(destination);
+    eventDatetimeFrom = formatEventDateTime(date_from);
+    eventDatetimeTo = formatEventDateTime(date_to);
+    destinationListOptions = getDestinationListOptions();
+    eventTypeItemsList = getEventTypeItemsList(type);
+    eventOfferItemsList = getEventOfferItemsList(type, offers);
+    offersSection = createOffersSection(eventOfferItemsList);
+    descriptionSection = createDescriptionSection(cityInfo);
+    photosContainer = createPhotosContainer(cityInfo);
+  } else {
+    type = 'flight';
+    eventTypeItemsList = getEventTypeItemsList(type);
+    cityInfo = {
+      name: '',
+      description: '',
+      pictures: [],
+    };
+    eventDatetimeFrom = new Date();
+    eventDatetimeTo = new Date(eventDatetimeFrom); // создаем новый объект даты на основе eventDatetimeFrom
+    eventDatetimeTo.setDate(eventDatetimeFrom.getDate() + 1); // добавляем 1 день
+    base_price = 999;
+    offersSection = '';
+    descriptionSection = '';
+    photosContainer = '';
+  }
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -185,7 +211,7 @@ function createEditFormTemplate (event) {
             </li>`;
 }
 
-export default class NewEditFormView extends AbstractStatefulView {
+export default class EditFormView extends AbstractStatefulView {
   #onEditFormSubmit = null;
   #onRollupClick = null;
   #onDeleteClick = null;
@@ -194,7 +220,8 @@ export default class NewEditFormView extends AbstractStatefulView {
 
   constructor ({event, onEditFormSubmit, onRollupClick, onDeleteClick}) {
     super();
-    this._setState(NewEditFormView.parseEventToState(event));
+
+    this._setState(EditFormView.parseEventToState(event));
     // Получаем обработчик сабмита формы снаружи
     this.#onEditFormSubmit = onEditFormSubmit;
     this.#onRollupClick = onRollupClick;
@@ -205,7 +232,7 @@ export default class NewEditFormView extends AbstractStatefulView {
   // Делаем на основе обработчика новый обработчик
   #handleEditFormSubmit = (event) => {
     event.preventDefault();
-    this.#onEditFormSubmit(NewEditFormView.parseStateToEvent(this._state));
+    this.#onEditFormSubmit(EditFormView.parseStateToEvent(this._state));
   };
 
   _restoreHandlers() {
@@ -214,7 +241,9 @@ export default class NewEditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', (event) => this.#rollupClickHandler(event));
     this.element.querySelector('.event__input--destination').addEventListener('change', () => this.#destinationChangeHandler());
     this.element.querySelector('.event__type-group').addEventListener('change', (event) => this.#typeChangeHandler(event));
-    this.element.querySelector('.event__available-offers').addEventListener('click', (event) => this.#offersListClickHandler(event));
+    if (this.element.querySelector('.event__available-offers')) {
+      this.element.querySelector('.event__available-offers').addEventListener('click', (event) => this.#offersListClickHandler(event));
+    }
     this.element.querySelector('.event__reset-btn').addEventListener('click', (event) => this.#formDeleteClickHandler(event));
 
     this.#setDatepickerFrom();
@@ -305,7 +334,7 @@ export default class NewEditFormView extends AbstractStatefulView {
 
   #formDeleteClickHandler = (event) => {
     event.preventDefault();
-    this.#onDeleteClick(NewEditFormView.parseStateToEvent(this._state));
+    this.#onDeleteClick(EditFormView.parseStateToEvent(this._state));
   };
 
   get template() {
@@ -323,7 +352,7 @@ export default class NewEditFormView extends AbstractStatefulView {
   }
 
   reset (event) {
-    this.updateElement(NewEditFormView.parseEventToState(event));
+    this.updateElement(EditFormView.parseEventToState(event));
   }
 
   removeElement() {

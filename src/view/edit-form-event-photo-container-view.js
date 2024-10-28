@@ -8,7 +8,7 @@ function editFormEventPhotoContainerTemplate (pictures) {
           </div>`;
 }
 
-export default class newEditFormEventPhotoContainerView extends AbstractView {
+export default class EditFormEventPhotoContainerView extends AbstractView {
 
   #pictures = null;
 

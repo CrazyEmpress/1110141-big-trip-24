@@ -11,7 +11,7 @@ function editFormEventOfferSelectorTemplate (offerCheckedAttribute, offerTitle, 
           </div>`;
 }
 
-export default class newEditFormEventOfferSelectorView extends AbstractView {
+export default class EditFormEventOfferSelectorView extends AbstractView {
 
   #offerCheckedAttribute = null;
   #offerTitle = null;

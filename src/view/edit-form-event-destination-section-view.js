@@ -7,7 +7,7 @@ function editFormEventDestinationSectionTemplate (description) {
           </section>`;
 }
 
-export default class newEditFormEventDestinationSectionView extends AbstractView {
+export default class EditFormEventDestinationSectionView extends AbstractView {
 
   #description = null;
 

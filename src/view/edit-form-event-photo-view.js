@@ -4,7 +4,7 @@ function editFormEventPhotoTemplate (src, description) {
   return `<img class="event__photo" src="${src}" alt="${description} photo"></img>`;
 }
 
-export default class newEditFormEventPhotoView extends AbstractView {
+export default class EditFormEventPhotoView extends AbstractView {
 
   #src = null;
   #description = null;

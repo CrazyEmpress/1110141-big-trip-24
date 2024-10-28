@@ -8,7 +8,7 @@ function editFormEventTypeItemTemplate (eventType, typeCheckedAttribute) {
           </div>`;
 }
 
-export default class newEditFormEventTypeItemView extends AbstractView {
+export default class EditFormEventTypeItemView extends AbstractView {
   #eventType = null;
   #typeCheckedAttribute = null;
 
